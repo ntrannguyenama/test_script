@@ -1,0 +1,143 @@
+{
+  "name": "scanbeton-mobile",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/scanbeton/mobile/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/scanbeton/mobile",
+        "index": "apps/scanbeton/mobile/src/index.html",
+        "main": "apps/scanbeton/mobile/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/scanbeton/mobile/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/scanbeton/mobile/src/assets",
+            "output": "assets"
+          },
+          {
+            "glob": "**/*.svg",
+            "input": "node_modules/ionicons/dist/ionicons/svg",
+            "output": "./svg"
+          },
+          {
+            "input": "libs/shared/core/icons/src/assets/icons",
+            "glob": "**/*",
+            "output": "assets/icons/svg"
+          },
+          {
+            "input": "libs/shared/core/icons/src/assets",
+            "glob": "**/*.json",
+            "output": "assets/icons"
+          }
+        ],
+        "styles": [
+          "libs/shared/core/scss/src/lib/theme/variables.scss",
+          "libs/shared/core/scss/src/lib/theme/variables-dark.scss",
+          "libs/shared/core/scss/src/lib/theme/theme.scss",
+          "libs/shared/core/scss/src/lib/theme/theme-dark.scss",
+          "libs/shared/core/scss/src/lib/global.scss",
+          "node_modules/flag-icons/css/flag-icons.min.css"
+        ],
+        "allowedCommonJsDependencies": [
+          "fast-deep-equal",
+          "apexcharts",
+          "lodash",
+          "subscriptions-transport-ws",
+          "qrcode",
+          "file-saver",
+          "microsoft-cognitiveservices-speech-sdk"
+        ],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "4mb",
+              "maximumError": "10mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "buildTarget": "scanbeton-mobile:build:production"
+        },
+        "development": {
+          "buildTarget": "scanbeton-mobile:build:development"
+        }
+      },
+      "options": {
+        "proxyConfig": "libs/shared/core/scss/src/lib/proxy.conf.json",
+        "port": 4000
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "scanbeton-mobile:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/scanbeton/mobile/jest.config.ts"
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "scanbeton-mobile:build",
+        "spa": true
+      }
+    },
+    "xcode": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "app-tool scanbeton env version && npx nx build scanbeton-mobile --prod --skip-nx-cache && cd apps/scanbeton/mobile && npx cap sync"
+        ],
+        "parallel": false
+      }
+    },
+    "xcode-open": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["cd apps/swell/mobile && npx cap open ios"],
+        "parallel": false
+      }
+    }
+  }
+}
